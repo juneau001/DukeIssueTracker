@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible"
+              content="IE=edge"/>
+        <meta name="viewport" 
+              content="width=device-width,
+              initial-scale=1"/>
+        <!-- Bootstrap -->
+        <link href="${pageContext.request.contextPath}/DukeIssueTracker/resources/css/bootstrap.min.css" rel="stylesheet"/>
+
+        <title>Duke's Issue Tracker</title>
+
+
+
+    </h:head>
+
+    <h:body>
+
+       <div class="container">
+
+            <h1>Issue #{issuesBean.issue.id} - #{issuesBean.issue.subject}</h1>
+
+            <!-- In real world application this should go into a tag file -->
+            <c:if test="#{messages.message != null}">
+                <div class="alert alert-success" role="alert">
+                    #{messages.message}
+                </div>
+            </c:if>
+            <c:if test="${not empty messages.error}">
+                <div class="alert alert-danger" role="alert">
+                    <ul class="list-unstyled">
+                        #{messages.error}
+                    </ul>
+                </div>
+            </c:if>
+
+            <form action="${pageContext.request.contextPath}/DukeIssueTracker/tracker/issues/update"
+                  method="POST" class="form-inline">
+                
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Issue Information</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            
+                            <p:outputLabel 
+                                for="subject"
+                                value="Subject:"/>
+                            <p:inputText id="subject" type="text" value="#{issuesBean.issue.subject}"/>
+                        </div>
+                        <div class="form-group">
+                            <p:outputLabel 
+                                for="priority"
+                                value="Priority:"/>
+                            <h:selectOneMenu id="priority" title="Priority" value="#{issuesBean.issue.priority}"
+                                             class="form-control">
+                                <f:selectItem itemValue="1" itemLabel="1"/>
+                                <f:selectItem itemValue="2" itemLabel="2"/>
+                                <f:selectItem itemValue="3" itemLabel="3"/>
+                                <f:selectItem itemValue="4" itemLabel="4"/>
+                            </h:selectOneMenu>
+                        </div>
+                        <div class="form-group">
+                            <label for="status">Status</label>
+                            <h:selectOneMenu id="status" title="Status" value="#{issuesBean.issue.status}"
+                                             class="form-control">
+                                <f:selectItem itemValue="1" itemLabel="OPEN"/>
+                                <f:selectItem itemValue="2" itemLabel="ASSIGNED"/>
+                                <f:selectItem itemValue="3" itemLabel="CANCELED"/>
+                                <f:selectItem itemValue="4" itemLabel="COMPLETE"/>
+                            </h:selectOneMenu>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Requestor</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <p:outputLabel
+                            for="requestorFirstName"
+                            value="First:"/>
+                            <p:inputText id="requestorFirstName" type="text" readonly="true"
+                                   
+                                   value="#{issuesBean.issue.requestorFirstName}"/>
+                        </div>
+                        <div class="form-group">
+                            <p:outputLabel
+                            for="requestorLastName"
+                            value="Last:" />
+                            <p:inputText id="requestorLastName" type="text" readonly="true"
+                                   placeholder="Last"
+                                   value="#{issuesBean.issue.requestorLastName}"/>
+                        </div>
+                        <div class="form-group">
+                            <p:outputLabel
+                            for="requestorEmail"
+                            value="Email:"/>
+                            <p:inputText id="requestorEmail" type="text" readonly="true"
+                                   placeholder="First"
+                                   value="#{issuesBean.issue.requestorEmail}"/>
+                        </div>
+                    </div>
+                </div>
+
+
+                <br/><br/>
+                <div class="form-group">
+                   <p:outputLabel for="description"
+                                   value="Description:"/>
+                    <br/>
+                    <p:inputTextarea cols="100" rows="4" id="description"  placeholder="Description"
+                                     value="#{issuesBean.issue.description}">
+                    </p:inputTextarea>
+                </div>
+                
+                <h:inputHidden  id="id" value="#{issuesBean.issue.id}"/>
+                <button type="submit" class="btn btn-primary">Update</button>
+            </form>
+
+        </div>
+    </h:body>
+</html>

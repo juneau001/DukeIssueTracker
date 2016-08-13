@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+          
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible"
+              content="IE=edge"/>
+        <meta name="viewport" 
+              content="width=device-width,
+              initial-scale=1"/>
+
+        <!-- Bootstrap -->
+        <link href="${pageContext.request.contextPath}/DukeIssueTracker/resources/css/bootstrap.min.css" rel="stylesheet"/>
+        
+        <title>Duke's Issue Tracker</title>
+
+
+
+    </h:head>
+
+    <h:body>
+
+        <div class="container">
+
+            <h1>Issue Listing</h1>
+
+            <!-- In real world application this should go into a tag file -->
+            <c:if test="#{messages.message != null}">
+                <div class="alert alert-success" role="alert">
+                    #{messages.message}
+                </div>
+            </c:if>
+            <c:if test="${not empty messages.error}">
+                <div class="alert alert-danger" role="alert">
+                    <ul class="list-unstyled">
+                        #{messages.error}
+                    </ul>
+                </div>
+            </c:if>
+
+            <p:dataTable id="issueTable"
+                         value="#{issuesBean.issueList}"
+                         var="issue"
+                         emptyMessage="No issues found">
+                <p:column id="issue" 
+                          headerText="Issue ID">
+                    #{issue.id}
+
+                </p:column>
+                <p:column id="subject" 
+                          headerText="Subject">
+                    #{issue.subject}
+
+                </p:column>
+                <p:column id="requestor" 
+                          headerText="Requestor">
+                    #{issue.requestor.email}
+
+                </p:column>
+                <p:column id="priority" 
+                          headerText="Priority">
+                    #{issue.priority.priority}
+
+                </p:column>
+                <p:column id="status" 
+                          headerText="Status">
+                    #{issue.status.status}
+
+                </p:column>
+                <p:column id="assignee" 
+                          headerText="Assignee">
+                    #{issue.assignee.email}
+
+                </p:column>
+                <p:column headerText="Manage">
+                    <form action="${pageContext.request.contextPath}/DukeIssueTracker/tracker/issues/manageIssue" method="POST">
+                        <input type="hidden" name="id" value="#{issue.id}"/>
+                        <button type="submit" class="btn btn-primary">
+                            Manage
+                        </button>
+                    </form>
+                    <form action="${pageContext.request.contextPath}/DukeIssueTracker/tracker/issues/delete" method="POST">
+                        <input type="hidden" name="id" value="#{issue.id}"/>
+                        <button type="submit" class="btn btn-danger">
+                            Delete
+                        </button>
+                    </form>
+                </p:column>
+
+            </p:dataTable>
+
+            <hr/>
+            <h1>Create Issue</h1>
+            <form action="${pageContext.request.contextPath}/DukeIssueTracker/tracker/issues/create"
+                  method="POST" class="form-inline">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            Issue Information</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <p:outputLabel 
+                                for="subject"
+                                value="Subject:"/>
+                            <p:inputText type="text" 
+                                         id="subject"
+                                         placeholder="Title"
+                                         value="#{issuesBean.issue.subject}" />
+                        </div>
+                        <div class="form-group">
+                            <p:outputLabel 
+                                for="priority"
+                                value="Priority:"/>
+                            <h:selectOneMenu 
+                                id="priority"
+                                title="Priority"
+                                value="1" class="form-control">
+                                <f:selectItem
+                                    itemValue="1"
+                                    itemLabel="1"/>
+                                <f:selectItem
+                                    itemValue="2"
+                                    itemLabel="2"/>
+                                <f:selectItem
+                                    itemValue="3"
+                                    itemLabel="3"/>
+                                <f:selectItem
+                                    itemValue="4"
+                                    itemLabel="4"/>
+                            </h:selectOneMenu>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            Requestor
+                        </h3>
+                    </div>
+                    <h:panelGrid columns="2"
+                                 style="width: 100%">
+
+                        <p:outputLabel
+                            for="requestorFirstName"
+                            value="First:"/>
+                        <p:inputText 
+                            id="requestorFirstName" 
+                            placeholder="First"
+                            value="#{issuesBean.issue.requestorFirstName}"/>
+
+                        <p:outputLabel
+                            for="requestorLastName"
+                            value="Last:" />
+                        <p:inputText  
+                            id="requestorLastName" 
+                            placeholder="Last"
+                            value="#{issuesBean.issue.requestorLastName}"/>
+
+                        <p:outputLabel
+                            for="requestorEmail"
+                            value="Email:"/>
+                        <p:inputText
+                            type="text"
+                            id="requestorEmail" 
+                            placeholder="Email"
+                            value="#{issuesBean.issue.requestorEmail}"/>
+
+                    </h:panelGrid>
+                </div>
+
+
+                <br/><br/>
+                <div class="form-group">
+                    <p:outputLabel for="description"
+                                   value="Description:"/>
+                    <br/>
+                    <p:inputTextarea cols="100"
+                                     rows="4"
+                                     id="description"
+                                     placeholder="Description"
+                                     value="#{issuesBean.issue.description}"/>
+
+                </div>
+                <br/><br/>
+                <button type="submit" 
+                        class="btn btn-primary">
+                    Create
+                </button>
+            </form>
+
+        </div>
+
+    </h:body>
+</html>
